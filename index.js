@@ -6,8 +6,14 @@ function statement (invoice, plays) {
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
     for (let perf of invoice.performances) { 
+        // === 目標 2 : 移除 play 變數 === Start
         const play = plays[perf.playID];
-        let thisAmount = amountFor(perf, play); // 被替換成函式了
+        let thisAmount = amountFor(perf, play);
+        // ===
+        // 考慮 amountFor 的變數時
+        //   aPerformance 來自迴圈變數，每次迭代時會改變
+        //   play 來自於 performance (aPerformance 的型態)，其實不需要用參數來傳遞
+        // === 目標 2 : 移除變數 === End
         
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
@@ -21,11 +27,6 @@ function statement (invoice, plays) {
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 
-    // ===
-    // 修改變數的名稱
-    // 透過修改名稱，讓程式碼能夠更清楚的表達他的意思
-    // 作者習慣將回傳值命名為 result ，參數名稱則使用不定冠詞 (a, an) + 型態名稱
-    // ===
     function amountFor(aPerformance, play) {
         let result = 0;
         switch (play.type) { 
