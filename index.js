@@ -3,7 +3,9 @@ function statement (invoice, plays) {
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`; 
     for (let perf of invoice.performances) {
+        // === 目標 5 : 移除總 volume credit === Start
         volumeCredits += volumeCreditsFor(perf);
+        // === 目標 5 : 移除總 volume credit === End
         
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
@@ -46,13 +48,6 @@ function statement (invoice, plays) {
         return result;
     }
 
-    // ===
-    // 作者認為 format 無法充分表達它的用途
-    // formatAsUSD 有點累贅 (因為這個使用的範圍小)
-    // 應該要強調「他格式化的東西是貨幣金額」這個事實
-    // 
-    // 命名很重要，好的命名可以讓你不需閱讀函式內文就可以瞭解其作用
-    // ===
     function usd(aNumber) {
         return new Intl.NumberFormat("en-US", 
                             { style: "currency", currency: "USD", 
