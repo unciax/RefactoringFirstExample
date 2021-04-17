@@ -22,34 +22,30 @@ function statement (invoice, plays) {
     return result;
 
     // ===
-    // 1. 抽離程式 
-    //    將 statement 中的 switch 語句被抽離成一個新的函式，且函式以其功能命名
-    // 2. 找出離開作用域的變數 
-    //    => perf, play, thisAmount 
-    //    pref, play 在這段程式中並不會被修改 => 可作為參數傳遞
-    //    thisAmount 會被修改，因此要小心應對 => 不過這例子只有一個，就直接把他當回傳值吧
-    // 上述行為稱之為 Extra Function
+    // 修改變數的名稱
+    // 透過修改名稱，讓程式碼能夠更清楚的表達他的意思
+    // 作者習慣將回傳值命名為 result ，參數名稱則使用不定冠詞 (a, an) + 型態名稱
     // ===
-    function amountFor(perf, play) {
-        let thisAmount = 0;
+    function amountFor(aPerformance, play) {
+        let result = 0;
         switch (play.type) { 
         case "tragedy":
-            thisAmount = 40000;
-            if (perf.audience > 30) {
-                thisAmount += 1000 * (perf.audience - 30); 
+            result = 40000;
+            if (aPerformance.audience > 30) {
+                result += 1000 * (aPerformance.audience - 30); 
             }
             break;
         case "comedy":
-            thisAmount = 30000;
-            if (perf.audience > 20) {
-                thisAmount += 10000 + 500 * (perf.audience - 20); 
+            result = 30000;
+            if (aPerformance.audience > 20) {
+                result += 10000 + 500 * (aPerformance.audience - 20); 
             }
-            thisAmount += 300 * perf.audience;
+            result += 300 * aPerformance.audience;
             break; 
         default:
             throw new Error(`unknown type: ${play.type}`); 
         }
-        return thisAmount;
+        return result;
     }
 }
 
