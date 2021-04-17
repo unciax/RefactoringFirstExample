@@ -3,13 +3,12 @@ function statement (invoice, plays) {
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`; 
     for (let perf of invoice.performances) {
-        // === 目標 5 : 移除總 volume credit === Start
-        volumeCredits += volumeCreditsFor(perf);
-        // === 目標 5 : 移除總 volume credit === End
-        
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
+    }
+    for (let perf of invoice.performances) {
+        volumeCredits += volumeCreditsFor(perf); // 將累加 volumeCredits 的程式碼分離出來 (Split Loop)
     }
     result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
