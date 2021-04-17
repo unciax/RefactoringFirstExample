@@ -9,6 +9,7 @@ function statement (invoice, plays) {
         const play = plays[perf.playID];
         let thisAmount = 0;
     
+        // === 目標 1 : Switch === Start
         switch (play.type) { 
         case "tragedy":
             thisAmount = 40000;
@@ -26,6 +27,10 @@ function statement (invoice, plays) {
         default:
             throw new Error(`unknown type: ${play.type}`); 
         }
+        // ====
+        // 透過觀察，可以發現這是一個計算表演費用的程式
+        // 這是大腦理解的結果，但腦容量有限，應該將理解的結果轉換成程式碼加以保存 (程式碼即文件)
+        // === 目標 1 : Switch === End
         
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
