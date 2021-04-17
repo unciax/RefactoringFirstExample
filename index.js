@@ -6,15 +6,14 @@ function statement (invoice, plays) {
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
     for (let perf of invoice.performances) {
-        let thisAmount = amountFor(perf); // amountFor 只剩下一個參數
         
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
         // add extra credit for every ten comedy attendees (?)
         if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
         // print line for this order
-        result += ` ${playFor(perf).name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
-        totalAmount += thisAmount;
+        result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+        totalAmount += amountFor(perf);
     }
     result += `Amount owed is ${format(totalAmount/100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
@@ -48,8 +47,3 @@ function statement (invoice, plays) {
 }
 
 module.exports = statement;
-// ===
-// 或許有些人不太認同這樣的做法
-//   play 物件的取得一個迭代只需要執行一次 -> 執行三次 (效能變差，但影響應該不大)
-// 修改完後的架構比較容易修改
-//   移除區域變數會讓程式碼提取更為容易 (畢竟要注意的變數減少了)
