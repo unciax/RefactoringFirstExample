@@ -2,13 +2,6 @@ function statement (invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`; 
-    // === 目標 4 : 移除 format 變數 === Start
-    const format = new Intl.NumberFormat("en-US", 
-                          { style: "currency", currency: "USD", 
-                            minimumFractionDigits: 2 }).format;
-    // ===
-    // 暫時變數可能會產生問題，且會使得子程式變得複雜及冗長
-    // === 目標 4 : 移除 format 變數 === End
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
         
@@ -51,6 +44,15 @@ function statement (invoice, plays) {
         result += Math.max(aPerformance.audience  - 30, 0);
         if ("comedy" === playFor(aPerformance).type) result += Math.floor(aPerformance.audience / 5); 
         return result;
+    }
+
+    // ===
+    // 宣告一個函式取代函式變數是一種重構，但作者認為沒有重要到需要給他一個名字 (幫 QQ)
+    // ===
+    function format(aNumber) {
+        return new Intl.NumberFormat("en-US", 
+                            { style: "currency", currency: "USD", 
+                              minimumFractionDigits: 2 }).format(aNumber);
     }
 }
 
