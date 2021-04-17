@@ -6,14 +6,8 @@ function statement (invoice, plays) {
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
     for (let perf of invoice.performances) { 
-        // === 目標 2 : 移除 play 變數 === Start
-        const play = plays[perf.playID];
+        const play = playFor(perf); // 替換為函式
         let thisAmount = amountFor(perf, play);
-        // ===
-        // 考慮 amountFor 的變數時
-        //   aPerformance 來自迴圈變數，每次迭代時會改變
-        //   play 來自於 performance (aPerformance 的型態)，其實不需要用參數來傳遞
-        // === 目標 2 : 移除變數 === End
         
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
@@ -47,6 +41,10 @@ function statement (invoice, plays) {
             throw new Error(`unknown type: ${play.type}`); 
         }
         return result;
+    }
+
+    function playFor(aPerformance) { 
+        return plays[aPerformance.playID];
     }
 }
 
