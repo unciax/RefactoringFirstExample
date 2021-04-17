@@ -1,14 +1,14 @@
 function statement (invoice, plays) {
     let totalAmount = 0;
-    let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`; 
     for (let perf of invoice.performances) {
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
+    let volumeCredits = 0; // 將變數的宣告式移到迴圈旁邊 (Slide Statement)
     for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf); // 將累加 volumeCredits 的程式碼分離出來 (Split Loop)
+        volumeCredits += volumeCreditsFor(perf);
     }
     result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
