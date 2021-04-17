@@ -2,9 +2,13 @@ function statement (invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`; 
+    // === 目標 4 : 移除 format 變數 === Start
     const format = new Intl.NumberFormat("en-US", 
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
+    // ===
+    // 暫時變數可能會產生問題，且會使得子程式變得複雜及冗長
+    // === 目標 4 : 移除 format 變數 === End
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
         
