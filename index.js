@@ -5,16 +5,16 @@ function statement (invoice, plays) {
     const format = new Intl.NumberFormat("en-US", 
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
-    for (let perf of invoice.performances) { 
-        const play = playFor(perf); // 替換為函式
-        let thisAmount = amountFor(perf, play);
+    for (let perf of invoice.performances) {
+        // play 變數被拿掉了，所有有存取到的地方都改使用 playFor(perf)
+        let thisAmount = amountFor(perf, playFor(perf));
         
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
         // add extra credit for every ten comedy attendees (?)
-        if ("comedy" === play.type) volumeCredits += Math.floor(perf.audience / 5);
+        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
         // print line for this order
-        result += ` ${play.name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
+        result += ` ${playFor(perf).name}: ${format(thisAmount/100)} (${perf.audience} seats)\n`;
         totalAmount += thisAmount;
     }
     result += `Amount owed is ${format(totalAmount/100)}\n`;
