@@ -6,10 +6,10 @@ function statement (invoice, plays) {
         volumeCredits += volumeCreditsFor(perf);
         
         // print line for this order
-        result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
+        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${format(totalAmount/100)}\n`;
+    result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 
@@ -47,12 +47,16 @@ function statement (invoice, plays) {
     }
 
     // ===
-    // 宣告一個函式取代函式變數是一種重構，但作者認為沒有重要到需要給他一個名字 (幫 QQ)
+    // 作者認為 format 無法充分表達它的用途
+    // formatAsUSD 有點累贅 (因為這個使用的範圍小)
+    // 應該要強調「他格式化的東西是貨幣金額」這個事實
+    // 
+    // 命名很重要，好的命名可以讓你不需閱讀函式內文就可以瞭解其作用
     // ===
-    function format(aNumber) {
+    function usd(aNumber) {
         return new Intl.NumberFormat("en-US", 
                             { style: "currency", currency: "USD", 
-                              minimumFractionDigits: 2 }).format(aNumber);
+                              minimumFractionDigits: 2 }).format(aNumber/100);
     }
 }
 
