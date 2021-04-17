@@ -6,7 +6,6 @@ function statement (invoice, plays) {
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
     for (let perf of invoice.performances) {
-        // play 變數被拿掉了，所有有存取到的地方都改使用 playFor(perf)
         let thisAmount = amountFor(perf, playFor(perf));
         
         // add volume credits
@@ -23,7 +22,7 @@ function statement (invoice, plays) {
 
     function amountFor(aPerformance, play) {
         let result = 0;
-        switch (play.type) { 
+        switch (playFor(aPerformance).type) {  // 將 play 替換為新的函式
         case "tragedy":
             result = 40000;
             if (aPerformance.audience > 30) {
@@ -38,7 +37,7 @@ function statement (invoice, plays) {
             result += 300 * aPerformance.audience;
             break; 
         default:
-            throw new Error(`unknown type: ${play.type}`); 
+            throw new Error(`unknown type: ${playFor(aPerformance).type}`); // 將 play 替換為新的函式
         }
         return result;
     }
