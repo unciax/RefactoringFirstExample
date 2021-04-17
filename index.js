@@ -6,7 +6,7 @@ function statement (invoice, plays) {
                           { style: "currency", currency: "USD", 
                             minimumFractionDigits: 2 }).format;
     for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf); // 替換成函式了
+        volumeCredits += volumeCreditsFor(perf);
         
         // print line for this order
         result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
@@ -42,16 +42,11 @@ function statement (invoice, plays) {
         return plays[aPerformance.playID];
     }
 
-    // ===
-    // 找出離開作用域的變數 => perf, volumeCredits
-    //   pref 很容易傳入
-    //   volumeCredits 累加變數，每一次迭代都會更新 <= 建立分身，再回傳他
-    // ===
-    function volumeCreditsFor(perf) {
-        let volumeCredits = 0; // 我就是分身
-        volumeCredits += Math.max(perf.audience  - 30, 0);
-        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5); 
-        return volumeCredits;
+    function volumeCreditsFor(aPerformance) {
+        let result = 0;
+        result += Math.max(aPerformance.audience  - 30, 0);
+        if ("comedy" === playFor(aPerformance).type) result += Math.floor(aPerformance.audience / 5); 
+        return result;
     }
 }
 
