@@ -7,10 +7,14 @@ function statement (invoice, plays) {
                             minimumFractionDigits: 2 }).format;
     for (let perf of invoice.performances) {
         
+        // === 目標 3 : 取出 volume credit === Start
         // add volume credits
         volumeCredits += Math.max(perf.audience - 30, 0);
         // add extra credit for every ten comedy attendees (?)
         if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+        // ===
+        // 移除 play 變數後，可以發現現在更容易取出 volume credit 的計算程式
+        // === 目標 3 : 取出 volume credit === End
         // print line for this order
         result += ` ${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
