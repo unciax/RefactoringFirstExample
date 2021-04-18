@@ -10,17 +10,13 @@ function createStatementData(invoice, plays) {
         const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
         const result = Object.assign({}, aPerformance);
         result.play = calculator.play;
-        result.amount = amountFor(result);
+        result.amount = calculator.amount; // Inline Variable
         result.volumeCredits = volumeCreditsFor(result); 
         return result;
     }
     
     function playFor(aPerformance) { 
         return plays[aPerformance.playID];
-    }
-    
-    function amountFor(aPerformance) {
-        return new PerformanceCalculator(aPerformance, playFor(aPerformance)).amount;
     }
     
     function volumeCreditsFor(aPerformance) {
@@ -47,27 +43,24 @@ class PerformanceCalculator {
         this.play = aPlay;
     }
 
-    // ===
-    // Move Function : 將 amountFor 改寫為 calculator amount getter
-    // ===
     get amount() {
         let result = 0;
         switch (this.play.type) {
             case "tragedy":
                 result = 40000;
-                if (this.performance.audience > 30) { // 改抓 calculator 內的 performance
-                    result += 1000 * (this.performance.audience - 30); // 改抓 calculator 內的 performance
+                if (this.performance.audience > 30) {
+                    result += 1000 * (this.performance.audience - 30);
                 }
                 break;
             case "comedy":
                 result = 30000;
-                if (this.performance.audience > 20) { // 改抓 calculator 內的 performance
-                    result += 10000 + 500 * (this.performance.audience - 20); // 改抓 calculator 內的 performance
+                if (this.performance.audience > 20) {
+                    result += 10000 + 500 * (this.performance.audience - 20);
                 }
-                result += 300 * this.performance.audience; // 改抓 calculator 內的 performance
+                result += 300 * this.performance.audience;
                 break; 
             default:
-                throw new Error(`unknown type: ${this.play.type}`); // 改抓 calculator 內的 play
+                throw new Error(`unknown type: ${this.play.type}`);
         }
         return result;
     }
