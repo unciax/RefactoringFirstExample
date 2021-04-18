@@ -1,5 +1,15 @@
 function statement (invoice, plays) {
-    // === 目標 7 : 將計算與格式化拆開 === Start
+    return renderPlainText(invoice, plays)
+}
+
+// ===
+// 解決這種狀況有很多種方法，作者最喜歡的方法是 Split Phase
+// 將邏輯拆成兩個階段：
+//   1. 負責計算 statement 需要的資料 
+//   2. 負責將他算繪成文字或 HTML
+// 這邊先針對第二階段做 Extract Function
+// ===
+function renderPlainText(invoice, plays) {
     let result = `Statement for ${invoice.customer}\n`; 
     for (let perf of invoice.performances) {
         // print line for this order
@@ -8,11 +18,6 @@ function statement (invoice, plays) {
     result += `Amount owed is ${usd(totalAmount())}\n`;
     result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
-    // ===
-    // 前面的重構重點在於幫函式加上充足的結構
-    // 從這個目標開始會將注意力放在功能變更的部分 => 提供 statement 的 HTML 版本
-    // 把計算程式都抽離了，只剩下一個工作：寫出最上面七行程式的 HTML 版本 (但作者不想要將他們複製並貼到新的函式內)
-    // === 目標 7 : 將計算與格式化拆開 === End
 
     function amountFor(aPerformance) {
         let result = 0;
