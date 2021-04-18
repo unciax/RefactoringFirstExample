@@ -4,7 +4,7 @@ function statement (invoice, plays) {
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${usd(appleSauce())}\n`; // 替換成函式了
+    result += `Amount owed is ${usd(totalAmount())}\n`;
     result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
 
@@ -48,23 +48,22 @@ function statement (invoice, plays) {
     }
 
     function totalVolumeCredits() {
-        let volumeCredits = 0;
+        let result = 0;
         for (let perf of invoice.performances) {
-            volumeCredits += volumeCreditsFor(perf);
+            result += volumeCreditsFor(perf);
         }
-        return volumeCredits; 
+        return result; 
     }
 
     // ===
-    // Extract Function
-    // 這隻功能最好的名稱應該是 totalAmount ，但卡在目前有變數叫做 totalAmount ，故先隨便命名
+    // 因為前面 Inline Variable ， totalAmount 沒有東西使用了，故這邊就可以將函式名稱變更成比較合理的
     // ===
-    function appleSauce() {
-        let totalAmount = 0;
+    function totalAmount() {
+        let result = 0;
         for (let perf of invoice.performances) {
-            totalAmount += amountFor(perf);
+            result += amountFor(perf);
         }
-        return totalAmount;
+        return result;
     }
 }
 
