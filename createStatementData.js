@@ -7,9 +7,9 @@ function createStatementData(invoice, plays) {
     return statementData;
 
     function enrichPerformance(aPerformance) {
-        const calculator = new PerformanceCalculator(aPerformance);
+        const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
         const result = Object.assign({}, aPerformance);
-        result.play = playFor(result);
+        result.play = calculator.play;
         result.amount = amountFor(result);
         result.volumeCredits = volumeCreditsFor(result); 
         return result;
@@ -60,12 +60,12 @@ function createStatementData(invoice, plays) {
 }
 
 // ===
-// 這個新物件本身還沒有任何功能，作者想要放入更多行為
-// 嚴格來說，這件事情非必要，但作者想要把所有的資料轉換程式都放在同一個地方，這種一致性可以讓程式更容易理解
+// 將 play 移入 calculator
 // ===
 class PerformanceCalculator { 
-    constructor(aPerformance) {
+    constructor(aPerformance, aPlay) {
         this.performance = aPerformance;
+        this.play = aPlay;
     }
 }
 module.exports = createStatementData;
