@@ -6,31 +6,21 @@ function statement (invoice, plays) {
 
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
-        result.play = playFor(result); // 對表演紀錄中增加 play 的資料
+        result.play = playFor(result);
+        result.amount = amountFor(result); // 以同樣方式對表演紀錄增加 amount 的資料
         return result;
     }
 
-    // ===
-    // Move Function : 將 playFor 移到 statement
-    // ===
     function playFor(aPerformance) { 
         return plays[aPerformance.playID];
     }
-}
 
-function renderPlainText(data, plays) { 
-    let result = `Statement for ${data.customer}\n`;
-    for (let perf of data.performances) {
-        // print line for this order
-        result += ` ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`; // 改用中間資料結構新增的資料
-    }
-    result += `Amount owed is ${usd(totalAmount())}\n`;
-    result += `You earned ${totalVolumeCredits()} credits\n`;
-    return result;
-
+    // ===
+    // Move Function : 將 amountFor 移到 statement
+    // ===
     function amountFor(aPerformance) {
         let result = 0;
-        switch (aPerformance.play.type) { // 改用中間資料結構新增的資料
+        switch (aPerformance.play.type) {
         case "tragedy":
             result = 40000;
             if (aPerformance.audience > 30) {
@@ -49,11 +39,22 @@ function renderPlainText(data, plays) {
         }
         return result;
     }
+}
+
+function renderPlainText(data, plays) { 
+    let result = `Statement for ${data.customer}\n`;
+    for (let perf of data.performances) {
+        // print line for this order
+        result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
+    }
+    result += `Amount owed is ${usd(totalAmount())}\n`;
+    result += `You earned ${totalVolumeCredits()} credits\n`;
+    return result;
 
     function volumeCreditsFor(aPerformance) {
         let result = 0;
         result += Math.max(aPerformance.audience  - 30, 0);
-        if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5); // 改用中間資料結構新增的資料
+        if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
         return result;
     }
 
@@ -74,7 +75,7 @@ function renderPlainText(data, plays) {
     function totalAmount() {
         let result = 0;
         for (let perf of data.performances) {
-            result += amountFor(perf);
+            result += perf.amount;
         }
         return result;
     }
