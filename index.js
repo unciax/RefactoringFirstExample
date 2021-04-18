@@ -2,13 +2,16 @@ function statement (invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances.map(enrichPerformance);
+    // 最後是計算總數
+    statementData.totalAmount = totalAmount(statementData);
+    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
     return renderPlainText(statementData, plays);
 
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
         result.amount = amountFor(result);
-        result.volumeCredits = volumeCreditsFor(result); // volume credit 計算也是
+        result.volumeCredits = volumeCreditsFor(result); 
         return result;
     }
 
@@ -38,13 +41,30 @@ function statement (invoice, plays) {
         return result;
     }
 
-    // ===
-    // Move Function : 將 volumeCreditsFor 移到 statement
-    // ===
     function volumeCreditsFor(aPerformance) {
         let result = 0;
         result += Math.max(aPerformance.audience  - 30, 0);
         if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
+        return result;
+    }
+
+    // ===
+    // Move Function : 將 totalVolumeCredits, totalAmount 移到 statement
+    // 作者表示其實也可以調整下面兩隻函式的內容，讓他們直接使用 statementData 變數，不過她比較喜歡明確地傳遞參數
+    // ===
+    function totalVolumeCredits(data) {
+        let result = 0;
+        for (let perf of data.performances) {
+            result += perf.volumeCredits;
+        }
+        return result; 
+    }
+
+    function totalAmount(data) {
+        let result = 0;
+        for (let perf of data.performances) {
+            result += perf.amount;
+        }
         return result;
     }
 }
@@ -55,30 +75,14 @@ function renderPlainText(data, plays) {
         // print line for this order
         result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${usd(totalAmount())}\n`;
-    result += `You earned ${totalVolumeCredits()} credits\n`;
+    result += `Amount owed is ${usd(data.totalAmount)}\n`; // 改使用中間資料結構的資料
+    result += `You earned ${data.totalVolumeCredits} credits\n`; // 改使用中間資料結構的資料
     return result;
 
     function usd(aNumber) {
         return new Intl.NumberFormat("en-US", 
                             { style: "currency", currency: "USD", 
                               minimumFractionDigits: 2 }).format(aNumber/100);
-    }
-
-    function totalVolumeCredits() {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.volumeCredits; // 換成中間資料結構新增的積分欄位
-        }
-        return result; 
-    }
-
-    function totalAmount() {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.amount;
-        }
-        return result;
     }
 }
 
