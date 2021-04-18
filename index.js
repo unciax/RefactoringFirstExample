@@ -1,16 +1,11 @@
 function statement (invoice, plays) {
-    return renderPlainText(invoice, plays)
+    const statementData = {}; // 建立一個物件，當成兩個階段之間的中間資料結構 (作者希望 renderPlainText 只需要處理 data 參數裡的資料)
+    statementData.customer = invoice.customer;
+    return renderPlainText(statementData, invoice, plays)
 }
 
-// ===
-// 解決這種狀況有很多種方法，作者最喜歡的方法是 Split Phase
-// 將邏輯拆成兩個階段：
-//   1. 負責計算 statement 需要的資料 
-//   2. 負責將他算繪成文字或 HTML
-// 這邊先針對第二階段做 Extract Function
-// ===
-function renderPlainText(invoice, plays) {
-    let result = `Statement for ${invoice.customer}\n`; 
+function renderPlainText(data, invoice, plays) {
+    let result = `Statement for ${data.customer}\n`; // 這邊改抓 data 裡面的
     for (let perf of invoice.performances) {
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
