@@ -5,7 +5,7 @@ function statement (invoice, plays) {
     // 最後是計算總數
     statementData.totalAmount = totalAmount(statementData);
     statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return renderPlainText(statementData, plays);
+    return renderPlainText(statementData);
 
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
@@ -69,7 +69,7 @@ function statement (invoice, plays) {
     }
 }
 
-function renderPlainText(data, plays) { 
+function renderPlainText(data) { // plays 沒用到了，移除
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
         // print line for this order
