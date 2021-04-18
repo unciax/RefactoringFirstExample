@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-const statement = require('../index.js');
+const index = require('../index.js');
 const invoiceInData = require('../invoice.js');
 const playsInData = require('../play.js');
 const expectString = `Statement for BigCo
@@ -12,6 +12,6 @@ You earned 47 credits
 
 describe('測試 statement 函數', () => {
     it('使用測試資料預期得到書本結果', () => {
-      expect(statement(invoiceInData, playsInData)).to.be.equal(expectString);
+      expect(index.statement(invoiceInData, playsInData)).to.be.equal(expectString);
     });
   });
