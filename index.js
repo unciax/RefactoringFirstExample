@@ -1,12 +1,13 @@
 function statement (invoice, plays) {
-    const statementData = {}; // 建立一個物件，當成兩個階段之間的中間資料結構 (作者希望 renderPlainText 只需要處理 data 參數裡的資料)
+    const statementData = {};
     statementData.customer = invoice.customer;
-    return renderPlainText(statementData, invoice, plays)
+    statementData.performances = invoice.performances;
+    return renderPlainText(statementData, plays);
 }
 
-function renderPlainText(data, invoice, plays) {
-    let result = `Statement for ${data.customer}\n`; // 這邊改抓 data 裡面的
-    for (let perf of invoice.performances) {
+function renderPlainText(data, plays) { // invoice 用不到了，所以就被移除了
+    let result = `Statement for ${data.customer}\n`;
+    for (let perf of data.performances) { // 這邊改抓 data 裡面的
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
     }
@@ -55,7 +56,7 @@ function renderPlainText(data, invoice, plays) {
 
     function totalVolumeCredits() {
         let result = 0;
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) { // 這邊改抓 data 裡面的
             result += volumeCreditsFor(perf);
         }
         return result; 
@@ -63,7 +64,7 @@ function renderPlainText(data, invoice, plays) {
 
     function totalAmount() {
         let result = 0;
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) { // 這邊改抓 data 裡面的
             result += amountFor(perf);
         }
         return result;
