@@ -7,15 +7,11 @@ function createStatementData(invoice, plays) {
     return statementData;
 
     function enrichPerformance(aPerformance) {
-        // === 目標 2 : 讓 Performance 計算器變為多型 === Start
-        const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
-        // ===
-        // 以子類別取代型別代碼，建構式要換成函式(因為 JavaScript 建構式沒辦法回傳子類別)
-        // === 目標 2 : 讓 Performance 計算器變為多型 === End
+        const calculator = createPerformanceCalculator(aPerformance, playFor(aPerformance)); // Replace Constructor with Factory Function
         const result = Object.assign({}, aPerformance);
         result.play = calculator.play;
         result.amount = calculator.amount;
-        result.volumeCredits = calculator.volumeCredits; // 積分也這樣處理
+        result.volumeCredits = calculator.volumeCredits;
         return result;
     }
     
@@ -31,6 +27,15 @@ function createStatementData(invoice, plays) {
     function totalAmount(data) {
         return data.performances
             .reduce((total, p) => total + p.amount, 0);
+    }
+}
+
+function createPerformanceCalculator(aPerformance, aPlay) {
+    switch(aPlay.type) {
+        case "tragedy": return new TragedyCalculator(aPerformance, aPlay); 
+        case "comedy" : return new ComedyCalculator(aPerformance, aPlay); 
+        default:
+            throw new Error(`unknown type: ${aPlay.type}`);
     }
 }
 
@@ -68,5 +73,16 @@ class PerformanceCalculator {
         if ("comedy" === this.play.type) result += Math.floor(this.performance.audience / 5);
         return result;
     }
+}
+
+
+// ===
+// Replace Type Code with Subclasses
+// ===
+class TragedyCalculator extends PerformanceCalculator {
+
+}
+class ComedyCalculator extends PerformanceCalculator {
+
 }
 module.exports = createStatementData;
