@@ -4,8 +4,7 @@ function statement (invoice, plays) {
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
     }
-    let totalAmount = appleSauce(); // 替換成函式了
-    result += `Amount owed is ${usd(totalAmount)}\n`;
+    result += `Amount owed is ${usd(appleSauce())}\n`; // 替換成函式了
     result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
 
