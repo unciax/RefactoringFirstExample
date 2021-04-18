@@ -6,18 +6,14 @@ function createStatementData(invoice, plays) {
     statementData.totalVolumeCredits = totalVolumeCredits(statementData); 
     return statementData;
 
-    // === 目標 1 : 建立 Performance 計算器 === Start
     function enrichPerformance(aPerformance) {
+        const calculator = new PerformanceCalculator(aPerformance);
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
         result.amount = amountFor(result);
         result.volumeCredits = volumeCreditsFor(result); 
         return result;
     }
-    // ===
-    // enrichPerformance 負責將每一種表演的資料填入中間資料結構
-    // 會呼叫計算費用與積分的函式，故想把這些東西放在一個新類別裡面包裝起來
-    // === 目標 1 : 建立 Performance 計算器 === End
     
     function playFor(aPerformance) { 
         return plays[aPerformance.playID];
@@ -60,6 +56,16 @@ function createStatementData(invoice, plays) {
     function totalAmount(data) {
         return data.performances
             .reduce((total, p) => total + p.amount, 0);
+    }
+}
+
+// ===
+// 這個新物件本身還沒有任何功能，作者想要放入更多行為
+// 嚴格來說，這件事情非必要，但作者想要把所有的資料轉換程式都放在同一個地方，這種一致性可以讓程式更容易理解
+// ===
+class PerformanceCalculator { 
+    constructor(aPerformance) {
+        this.performance = aPerformance;
     }
 }
 module.exports = createStatementData;
