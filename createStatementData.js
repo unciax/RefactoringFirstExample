@@ -6,6 +6,7 @@ function createStatementData(invoice, plays) {
     statementData.totalVolumeCredits = totalVolumeCredits(statementData); 
     return statementData;
 
+    // === 目標 1 : 建立 Performance 計算器 === Start
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
@@ -13,6 +14,10 @@ function createStatementData(invoice, plays) {
         result.volumeCredits = volumeCreditsFor(result); 
         return result;
     }
+    // ===
+    // enrichPerformance 負責將每一種表演的資料填入中間資料結構
+    // 會呼叫計算費用與積分的函式，故想把這些東西放在一個新類別裡面包裝起來
+    // === 目標 1 : 建立 Performance 計算器 === End
     
     function playFor(aPerformance) { 
         return plays[aPerformance.playID];
