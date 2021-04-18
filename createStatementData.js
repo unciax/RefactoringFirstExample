@@ -7,7 +7,11 @@ function createStatementData(invoice, plays) {
     return statementData;
 
     function enrichPerformance(aPerformance) {
+        // === 目標 2 : 讓 Performance 計算器變為多型 === Start
         const calculator = new PerformanceCalculator(aPerformance, playFor(aPerformance));
+        // ===
+        // 以子類別取代型別代碼，建構式要換成函式(因為 JavaScript 建構式沒辦法回傳子類別)
+        // === 目標 2 : 讓 Performance 計算器變為多型 === End
         const result = Object.assign({}, aPerformance);
         result.play = calculator.play;
         result.amount = calculator.amount;
