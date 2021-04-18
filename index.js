@@ -1,4 +1,5 @@
 function statement (invoice, plays) {
+    // === 目標 7 : 將計算與格式化拆開 === Start
     let result = `Statement for ${invoice.customer}\n`; 
     for (let perf of invoice.performances) {
         // print line for this order
@@ -7,6 +8,11 @@ function statement (invoice, plays) {
     result += `Amount owed is ${usd(totalAmount())}\n`;
     result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
+    // ===
+    // 前面的重構重點在於幫函式加上充足的結構
+    // 從這個目標開始會將注意力放在功能變更的部分 => 提供 statement 的 HTML 版本
+    // 把計算程式都抽離了，只剩下一個工作：寫出最上面七行程式的 HTML 版本 (但作者不想要將他們複製並貼到新的函式內)
+    // === 目標 7 : 將計算與格式化拆開 === End
 
     function amountFor(aPerformance) {
         let result = 0;
@@ -55,9 +61,6 @@ function statement (invoice, plays) {
         return result; 
     }
 
-    // ===
-    // 因為前面 Inline Variable ， totalAmount 沒有東西使用了，故這邊就可以將函式名稱變更成比較合理的
-    // ===
     function totalAmount() {
         let result = 0;
         for (let perf of invoice.performances) {
