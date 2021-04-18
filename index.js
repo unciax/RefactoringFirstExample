@@ -4,10 +4,12 @@ function statement (invoice, plays) {
     for (let perf of invoice.performances) {
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
+        // === 目標 6 : 移除 totalAmount === Start
         totalAmount += amountFor(perf);
+        // === 目標 6 : 移除 totalAmount === End
     }
     result += `Amount owed is ${usd(totalAmount)}\n`;
-    result += `You earned ${totalVolumeCredits()} credits\n`; // 被替換成函式了
+    result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
 
     function amountFor(aPerformance) {
@@ -59,5 +61,3 @@ function statement (invoice, plays) {
 }
 
 module.exports = statement;
-
-// 提醒：要回到簡報上
