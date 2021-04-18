@@ -45,17 +45,14 @@ class PerformanceCalculator {
         this.play = aPlay;
     }
 
-    // ===
-    // 可以選擇移除，畢竟不會有機會呼叫到 (不過作者覺得留下一個墓碑對未來比較好)
     get amount() {
         throw new Error('subclass responsibility');
     }
 
+    // ===
+    // 超類別中保留預設方案
     get volumeCredits() {
-        let result = 0;
-        result += Math.max(this.performance.audience -30, 0);
-        if ("comedy" === this.play.type) result += Math.floor(this.performance.audience / 5);
-        return result;
+        return Math.max(this.performance.audience - 30, 0);
     }
 }
 
@@ -67,11 +64,10 @@ class TragedyCalculator extends PerformanceCalculator {
         }
         return result;
     }
+    // ===
+    // 規則與預設方案相同，不用特別覆寫
 }
 class ComedyCalculator extends PerformanceCalculator {
-    // ===
-    // Replace Conditional with Polymorphism
-    // ===
     get amount() {
         let result = 30000;
         if (this.performance.audience > 20) {
@@ -79,6 +75,12 @@ class ComedyCalculator extends PerformanceCalculator {
         }
         result += 300 * this.performance.audience;
         return result;
+    }
+
+    // ===
+    // 必要時才覆寫
+    get volumeCredits() {
+        return super.volumeCredits + Math.floor(this.performance.audience / 5);
     }
 }
 module.exports = createStatementData;
