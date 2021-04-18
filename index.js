@@ -1,13 +1,21 @@
 function statement (invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances;
+    statementData.performances = invoice.performances.map(enrichPerformance);
     return renderPlainText(statementData, plays);
+
+    // ===
+    // 製作 performance 物件的副本 (避免修改到函式收到的資料，不然容易帶來麻煩)
+    // ===
+    function enrichPerformance(aPerformance) {
+        const result = Object.assign({}, aPerformance); // 淺複製
+        return result;
+    }
 }
 
-function renderPlainText(data, plays) { // invoice 用不到了，所以就被移除了
+function renderPlainText(data, plays) { 
     let result = `Statement for ${data.customer}\n`;
-    for (let perf of data.performances) { // 這邊改抓 data 裡面的
+    for (let perf of data.performances) {
         // print line for this order
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
     }
@@ -56,7 +64,7 @@ function renderPlainText(data, plays) { // invoice 用不到了，所以就被�
 
     function totalVolumeCredits() {
         let result = 0;
-        for (let perf of data.performances) { // 這邊改抓 data 裡面的
+        for (let perf of data.performances) {
             result += volumeCreditsFor(perf);
         }
         return result; 
@@ -64,7 +72,7 @@ function renderPlainText(data, plays) { // invoice 用不到了，所以就被�
 
     function totalAmount() {
         let result = 0;
-        for (let perf of data.performances) { // 這邊改抓 data 裡面的
+        for (let perf of data.performances) {
             result += amountFor(perf);
         }
         return result;
