@@ -2,7 +2,6 @@ function statement (invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances.map(enrichPerformance);
-    // 最後是計算總數
     statementData.totalAmount = totalAmount(statementData);
     statementData.totalVolumeCredits = totalVolumeCredits(statementData);
     return renderPlainText(statementData);
@@ -49,34 +48,27 @@ function statement (invoice, plays) {
     }
 
     // ===
-    // Move Function : 將 totalVolumeCredits, totalAmount 移到 statement
-    // 作者表示其實也可以調整下面兩隻函式的內容，讓他們直接使用 statementData 變數，不過她比較喜歡明確地傳遞參數
+    // Replace Loop with Pipeline
+    // 作者忍不住又多修改的地方 XD
     // ===
     function totalVolumeCredits(data) {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.volumeCredits;
-        }
-        return result; 
+        return data.performances
+            .reduce((total, p) => total + p.volumeCredits, 0);
     }
 
     function totalAmount(data) {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.amount;
-        }
-        return result;
+        return data.performances
+            .reduce((total, p) => total + p.amount, 0);
     }
 }
 
-function renderPlainText(data) { // plays 沒用到了，移除
+function renderPlainText(data) {
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
-        // print line for this order
         result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${usd(data.totalAmount)}\n`; // 改使用中間資料結構的資料
-    result += `You earned ${data.totalVolumeCredits} credits\n`; // 改使用中間資料結構的資料
+    result += `Amount owed is ${usd(data.totalAmount)}\n`;
+    result += `You earned ${data.totalVolumeCredits} credits\n`;
     return result;
 
     function usd(aNumber) {
