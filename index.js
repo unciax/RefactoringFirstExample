@@ -7,7 +7,8 @@ function statement (invoice, plays) {
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
-        result.amount = amountFor(result); // 以同樣方式對表演紀錄增加 amount 的資料
+        result.amount = amountFor(result);
+        result.volumeCredits = volumeCreditsFor(result); // volume credit 計算也是
         return result;
     }
 
@@ -15,9 +16,6 @@ function statement (invoice, plays) {
         return plays[aPerformance.playID];
     }
 
-    // ===
-    // Move Function : 將 amountFor 移到 statement
-    // ===
     function amountFor(aPerformance) {
         let result = 0;
         switch (aPerformance.play.type) {
@@ -39,6 +37,16 @@ function statement (invoice, plays) {
         }
         return result;
     }
+
+    // ===
+    // Move Function : 將 volumeCreditsFor 移到 statement
+    // ===
+    function volumeCreditsFor(aPerformance) {
+        let result = 0;
+        result += Math.max(aPerformance.audience  - 30, 0);
+        if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
+        return result;
+    }
 }
 
 function renderPlainText(data, plays) { 
@@ -51,13 +59,6 @@ function renderPlainText(data, plays) {
     result += `You earned ${totalVolumeCredits()} credits\n`;
     return result;
 
-    function volumeCreditsFor(aPerformance) {
-        let result = 0;
-        result += Math.max(aPerformance.audience  - 30, 0);
-        if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5);
-        return result;
-    }
-
     function usd(aNumber) {
         return new Intl.NumberFormat("en-US", 
                             { style: "currency", currency: "USD", 
@@ -67,7 +68,7 @@ function renderPlainText(data, plays) {
     function totalVolumeCredits() {
         let result = 0;
         for (let perf of data.performances) {
-            result += volumeCreditsFor(perf);
+            result += perf.volumeCredits; // 換成中間資料結構新增的積分欄位
         }
         return result; 
     }
