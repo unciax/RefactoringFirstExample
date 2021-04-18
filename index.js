@@ -4,12 +4,17 @@ function statement (invoice, plays) {
     statementData.performances = invoice.performances.map(enrichPerformance);
     return renderPlainText(statementData, plays);
 
-    // ===
-    // 製作 performance 物件的副本 (避免修改到函式收到的資料，不然容易帶來麻煩)
-    // ===
     function enrichPerformance(aPerformance) {
-        const result = Object.assign({}, aPerformance); // 淺複製
+        const result = Object.assign({}, aPerformance);
+        result.play = playFor(result); // 對表演紀錄中增加 play 的資料
         return result;
+    }
+
+    // ===
+    // Move Function : 將 playFor 移到 statement
+    // ===
+    function playFor(aPerformance) { 
+        return plays[aPerformance.playID];
     }
 }
 
@@ -17,7 +22,7 @@ function renderPlainText(data, plays) {
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
         // print line for this order
-        result += ` ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`;
+        result += ` ${perf.play.name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n`; // 改用中間資料結構新增的資料
     }
     result += `Amount owed is ${usd(totalAmount())}\n`;
     result += `You earned ${totalVolumeCredits()} credits\n`;
@@ -25,7 +30,7 @@ function renderPlainText(data, plays) {
 
     function amountFor(aPerformance) {
         let result = 0;
-        switch (playFor(aPerformance).type) {
+        switch (aPerformance.play.type) { // 改用中間資料結構新增的資料
         case "tragedy":
             result = 40000;
             if (aPerformance.audience > 30) {
@@ -45,14 +50,10 @@ function renderPlainText(data, plays) {
         return result;
     }
 
-    function playFor(aPerformance) { 
-        return plays[aPerformance.playID];
-    }
-
     function volumeCreditsFor(aPerformance) {
         let result = 0;
         result += Math.max(aPerformance.audience  - 30, 0);
-        if ("comedy" === playFor(aPerformance).type) result += Math.floor(aPerformance.audience / 5); 
+        if ("comedy" === aPerformance.play.type) result += Math.floor(aPerformance.audience / 5); // 改用中間資料結構新增的資料
         return result;
     }
 
