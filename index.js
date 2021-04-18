@@ -1,10 +1,14 @@
 function statement (invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances.map(enrichPerformance);
-    statementData.totalAmount = totalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-    return renderPlainText(statementData);
+    return renderPlainText(createStatementData(invoice, plays));
+
+    function createStatementData(invoice, plays) {
+        const statementData = {};
+        statementData.customer = invoice.customer;
+        statementData.performances = invoice.performances.map(enrichPerformance) 
+        statementData.totalAmount = totalAmount(statementData); 
+        statementData.totalVolumeCredits = totalVolumeCredits(statementData); 
+        return statementData;
+    }
 
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
@@ -47,10 +51,6 @@ function statement (invoice, plays) {
         return result;
     }
 
-    // ===
-    // Replace Loop with Pipeline
-    // 作者忍不住又多修改的地方 XD
-    // ===
     function totalVolumeCredits(data) {
         return data.performances
             .reduce((total, p) => total + p.volumeCredits, 0);
